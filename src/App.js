@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useEffect, useState } from "react";
+import Tours from "./Tours";
+import Loading from "./Loading";
+const Url = 'https://course-api.netlify.app/api/react-tours-project';
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [loading, setloading] = useState(true);
+  const [tours, settours] = useState([]);
+
+ const fetchTours = async () => {
+  setloading(true)
+  try {
+    const respond = await fetch(Url);
+    const tours = await respond.json();
+    setloading(false);
+    settours(tours);
+  } catch (error) {
+    setloading(false)
+    console.log(error);
+  }
+ 
+ };
+ useEffect(() => {
+  fetchTours()
+ },[])
+
+  if (loading){
+    return(
+    <main><Loading /></main>
+    )
+    
+  }
+  return( <main>
+    <Tours tours={tours} />
+  </main>
+  )
 }
 
 export default App;
